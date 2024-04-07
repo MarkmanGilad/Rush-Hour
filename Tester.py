@@ -8,12 +8,12 @@ class Tester:
         self.player = player
         
 
-    def test (self, games_num):
+    def test (self, games_num=1):
         env = self.rushhour
         player_steps = 0
         games = 0
         score = 0
-        while games < games_num:
+        while games < games_num and player_steps < 250:
             action = self.player.get_Action(state=env.state, train = False)
             env.move2( env.state , action)
             player_steps = player_steps + 1
@@ -21,6 +21,7 @@ class Tester:
                 score = score + player_steps
                 env.state = env.get_init_state()
                 games += 1
+                player_steps = 0
         print("done")
         return score / games_num       
 
@@ -31,4 +32,4 @@ if __name__ == '__main__':
     env = RushHour()
     player = Randon_Agent(env)
     test = Tester(env,player)
-    print(test.test(100))
+    print(test.test(10))

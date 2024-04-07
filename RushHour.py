@@ -7,6 +7,7 @@ from Constant import *
 from Graphics import *
 # from Random_Agent import Random_Agent
 import numpy as np
+import random
 
 class RushHour:
     def __init__(self , state:State = None):
@@ -149,13 +150,13 @@ class RushHour:
         return False
     
     def move2(self , state , action):
-        if state.board[5,3] == 1 and action[1] == 3:
+        if state.board[5,3] == 1 and action == (1, 3):
             self.clear_car(state)
             return
-        if 1 not in state.board and action[0] == 1:
-            state.board[4,3] = 1
-            state.board[5,3] = 1
-            return
+        # if 1 not in state.board and action[0] == 1:
+        #     state.board[4,3] = 1
+        #     state.board[5,3] = 1
+        #     return
         carNumber = action[0]
         direction = action[1]
         lstTuple = []
@@ -235,12 +236,12 @@ class RushHour:
         return 0
     
     def init2 (self):
-        board = np.array([[4, 4, 0, 3, 3, 0, 0], 
-                          [12, 5, 5, 1, 0, 0, 0],
-                          [12, 6, 0, 1, 2, 2, 0],
-                          [12, 6, 11, 11, 11, 10, 0],
-                          [0, 0, 8, 0, 9, 10, 0],
-                          [7, 7, 8, 0, 9, 10, 0]])
+        board = np.array([[4,  4,  0,  3,  3,  0,  0], 
+                          [12, 5,  5,  1,  0,  0,  0],
+                          [12, 6,  0,  1,  2,  2,  0],
+                          [12, 6, 11, 11, 11, 10,  0],
+                          [0,  0,  8,  0,  9, 10,  0],
+                          [7,  7,  8,  0,  9, 10,  0]])
         return board
     def init3 (self):
         board = np.array([[0, 0, 0, 0, 0, 0, 0], 
@@ -250,53 +251,57 @@ class RushHour:
                           [0, 0, 0, 2, 2, 0, 0],
                           [0, 0, 3, 3, 0, 0, 0]])
         return board
-    # def is_legal_move(self , rows , cols , action : Action , state: State = None):
-    #     if state is None:
-    #         state = self.state
-    #     if action is None:
-    #         return False
-    #     car_index = self.find_car(rows,cols)
-    #     if  car_index != 0:
-    #         if action == Action.UP and self.state.Cars[car_index].direction == VERTICAL:
-    #             if self.state.Cars[car_index].start[1] - 1 != -1 and self.find_car(self.state.Cars[car_index].start[1] -1,self.state.Cars[car_index].start[0]) == 0:
-    #                 return True
-    #         if action == Action.DOWN and self.state.Cars[car_index].direction == VERTICAL:
-    #             if self.state.Cars[car_index].end[1] + 1 != 6 and self.find_car(self.state.Cars[car_index].end[1] +1,self.state.Cars[car_index].end[0]) == 0:
-    #                 return True
-    #         if action == Action.LEFT and self.state.Cars[car_index].direction == HORIZONTTAL:
-    #             if self.state.Cars[car_index].start[0] -1 != -1 and self.find_car(self.state.Cars[car_index].start[1],self.state.Cars[car_index].start[0] -1) == 0:
-    #                 return True
-    #         if action == Action.RIGHT and self.state.Cars[car_index].direction == HORIZONTTAL:
-    #             if self.state.Cars[car_index].end[0] + 1 != 6 and self.find_car(self.state.Cars[car_index].end[1],self.state.Cars[car_index].end[0] +1) == 0:
-    #                 return True
-    #     if state.Cars[1].end[1] == 5:
-    #         return "win"
-    #     return False
-                      
-    # def move(self , action:Action , rows , cols , state:State):
-    #     if self.is_legal_move(rows , cols , action) == "win":
-    #         return "win"
-    #     if self.is_legal_move(rows , cols , action) == False:
-    #         print("Illegal Move")
-    #         return
-    #     self.state = state
-    #     car_index = self.find_car(rows,cols)
-    #     if action == Action.UP:
-    #         self.state.Cars[car_index].start = (self.state.Cars[car_index].start[0] , self.state.Cars[car_index].start[1] -1)
-    #         self.state.Cars[car_index].end = (self.state.Cars[car_index].end[0] , self.state.Cars[car_index].end[1] -1)
-    #         self.update_board(self.state.Cars)
-    #     if action == Action.DOWN:
-    #         car_index = self.find_car(rows,cols)
-    #         self.state.Cars[car_index].start = (self.state.Cars[car_index].start[0] , self.state.Cars[car_index].start[1] +1)
-    #         self.state.Cars[car_index].end = (self.state.Cars[car_index].end[0] , self.state.Cars[car_index].end[1] +1)
-    #         self.update_board(self.state.Cars)
-    #     if action == Action.LEFT:
-    #         car_index = self.find_car(rows,cols)
-    #         self.state.Cars[car_index].start = (self.state.Cars[car_index].start[0] -1, self.state.Cars[car_index].start[1])
-    #         self.state.Cars[car_index].end = (self.state.Cars[car_index].end[0] -1, self.state.Cars[car_index].end[1])
-    #         self.update_board(self.state.Cars)
-    #     if action == Action.RIGHT:
-    #         car_index = self.find_car(rows,cols)
-    #         self.state.Cars[car_index].start = (self.state.Cars[car_index].start[0] +1, self.state.Cars[car_index].start[1])
-    #         self.state.Cars[car_index].end = (self.state.Cars[car_index].end[0] +1, self.state.Cars[car_index].end[1])
-    #         self.update_board(self.state.Cars)
+    
+    def shuffle (self, state, times):
+        for i in range(times):
+            actions = self.all_legal_actions(state)
+            if (1,1) in actions:
+                action = 1,1
+            else:
+                action = random.choice(actions)
+            if (state.board[5,3] == 1 and action == (1,3)):
+                continue
+            self.move2(state, action)
+           
+
+    def cars (self, car_num = 3):
+        sizes = [2,3]
+        dir = [0,1]
+        cars = []
+        for i in range(car_num):
+            car = random.choice(sizes), random.choice(dir)
+            cars.append(car)
+        return cars
+
+    def random_init_state(self, shuffle_time=20, cars_num=3):
+        board = np.full((6,7),0)
+        board[4,3] = 1
+        board[5,3] = 1
+        cars = self.cars(cars_num)
+        for i, car in enumerate(cars):
+            put = False
+            while(not put):
+                row, col = random.randint(0,5), random.randint(0,6)
+                row1, col1 = row,col
+                row2, col2 = row,col
+                if car[1] == 0:
+                    row1, col1 = row, col +1
+                elif car[1] == 1:
+                    row1, col1 = row+1, col
+                if car[0] == 3:
+                    if car[1] == 0:
+                        row2, col2 = row, col + 2
+                    elif car[1] == 1:
+                        row2, col2 = row + 2, col
+                if car[1] == 1 and col == 3:
+                    continue
+                if (row1 < 6 and col1 < 7 and row2 < 6 and col2 < 7 and
+                    board[row,col] == 0 and board[row1, col1]==0 and board[row2, col2]==0 ):
+                    board[row,col] = i+2
+                    board[row1,col1] = i+2
+                    board[row2,col2] = i+2
+                    put = True
+      
+        state = State(board=board)
+        self.shuffle(state, shuffle_time)
+        return state

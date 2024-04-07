@@ -14,7 +14,7 @@ batch_size = 64
 env = RushHour()
 MIN_Buffer = 4000
 
-File_Num = 14
+File_Num = 20
 path_load= None
 path_Save=f'Data/params_{File_Num}.pth'
 path_best = f'Data/best_params_{File_Num}.pth'
@@ -44,7 +44,7 @@ def main ():
     # res = 0
     best_step = 200
     loss_count = 0
-    tester = Tester(rushhour=env , player=player)
+    tester = Tester(rushhour=RushHour() , player=player)
     random_results = [] #torch.load(random_results_path)   # []
     best_random = 0 #max(random_results)
     
@@ -56,7 +56,8 @@ def main ():
     
     for epoch in range(start_epoch, epochs):
         # print(f'epoch = {epoch}', end='\r')
-        state_1 = env.get_init_state()
+        # state_1 = env.get_init_state()
+        state_1 = env.random_init_state()
         while True: #not env.is_end_of_game(state_1) :
             print (state_1.step, end='\r')
             
@@ -100,7 +101,7 @@ def main ():
                 Q_hat.load_state_dict(Q.state_dict())
 
         if (epoch+1) % 10 == 0:
-            print(f'\nres= {state_1.step}')
+            # print(f'\nres= {state_1.step}')
             avgLosses.append(avgLoss)
             results.append(state_1.step)
             # results.append(res)
@@ -108,16 +109,17 @@ def main ():
             best_step = state_1.step
             
 
-        # if (epoch+1) % 1000 == 0:
-        #     print(f'\nres= {res}')
-        #     test = tester(100)
-        #     # test_score = test[0]-test[1]
-        #     test_score = test
-        #     if best_random < test_score and tester(1) == 1:
-        #         best_random = test_score
-        #         player.save_param(path_best_random)
-        #     print(test)
-        #     random_results.append(test_score)
+        if (epoch+1) % 100 == 0:
+            # print(f'\nres= {res}')
+            test = tester(1)
+            print("tester", test)
+            # test_score = test[0]-test[1]
+            # test_score = test
+            # if best_random < test_score and tester(1) == 1:
+            #     best_random = test_score
+            #     player.save_param(path_best_random)
+            
+            # random_results.append(test_score)
 
         if (epoch+1) % 500 == 0:
             torch.save({'epoch': epoch, 'results': results, 'avglosses':avgLosses}, results_path)
