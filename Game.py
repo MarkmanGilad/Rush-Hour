@@ -15,6 +15,7 @@ FPS = 60
 pygame.display.set_caption('Rush Hour')
 
 rushhour = RushHour()
+rushhour.state = rushhour.random_init_state(shuffle_time=100, cars_num=5)
 graphics = Graphics(rushhour.state)
 # agent = Randon_Agent(rushhour = rushhour)
 # for i in range(100):
@@ -29,7 +30,8 @@ agent = Human_Agent(rushhour = rushhour)
 # agent = DFS_Agent(rushhour = rushhour)
 # agent = BFS_Agent(rushhour = rushhour)
 # agent = A_Star_Agent(rushhour = rushhour)
-# agent = DQN_Agent(rushhour = rushhour , parametes_path= "Data\params_1.pth" , train=True)
+agent = DQN_Agent(rushhour = rushhour , parametes_path= "Data\params_20.pth" , train=True)
+
 
 def main():
     run = True
@@ -42,20 +44,20 @@ def main():
         for event in events:
             if event.type == pygame.QUIT:
                 run = False
-        action = agent.get_Action(state = rushhour.state , events = events)
+        action = agent.get_Action(state = rushhour.state , events = events, train=False)
         if action:  
             rushhour.move2(rushhour.state , action)
             step += 1
-            print(step)
+            print(action)
             # print(rushhour.state.Cars)
             graphics.draw()
-            pygame.time.delay(400)
+            
         if rushhour.is_end_of_game(rushhour.state):
             print("win")
             run = False
-
         
         pygame.display.update()
+        pygame.time.delay(400)
     pygame.quit()
     print("End Of The Game")
 

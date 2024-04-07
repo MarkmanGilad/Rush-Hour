@@ -1,5 +1,5 @@
 from Random_Agent import Randon_Agent
-# from Fix_Agent import Fix_Agent
+from DQN_Agent import DQN_Agent
 from RushHour import RushHour
 
 class Tester:
@@ -13,7 +13,9 @@ class Tester:
         player_steps = 0
         games = 0
         score = 0
-        while games < games_num and player_steps < 250:
+        while games < games_num:
+            if player_steps > 250:
+                return 250
             action = self.player.get_Action(state=env.state, train = False)
             env.move2( env.state , action)
             player_steps = player_steps + 1
@@ -30,6 +32,7 @@ class Tester:
 
 if __name__ == '__main__':
     env = RushHour()
-    player = Randon_Agent(env)
+    # player = Randon_Agent(env)
+    player = DQN_Agent(env=env, parametes_path="Data/params_20.pth", train=False)
     test = Tester(env,player)
     print(test.test(10))

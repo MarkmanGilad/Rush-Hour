@@ -8,8 +8,8 @@ from Tester import Tester
 
 epochs = 2000000
 start_epoch = 0
-C = 200
-learning_rate = 0.0001 # למד עם 0.0001
+C = 50
+learning_rate = 0.001 # למד עם 0.0001
 batch_size = 64
 env = RushHour()
 MIN_Buffer = 4000
@@ -57,7 +57,7 @@ def main ():
     for epoch in range(start_epoch, epochs):
         # print(f'epoch = {epoch}', end='\r')
         # state_1 = env.get_init_state()
-        state_1 = env.random_init_state()
+        state_1 = env.random_init_state(shuffle_time=100,cars_num=min(epoch//10000 + 3, 12))
         while True: #not env.is_end_of_game(state_1) :
             print (state_1.step, end='\r')
             
@@ -109,20 +109,21 @@ def main ():
             best_step = state_1.step
             
 
-        if (epoch+1) % 100 == 0:
+        if (epoch) % 10 == 0:
             # print(f'\nres= {res}')
             test = tester(1)
             print("tester", test)
+            random_results.append(test)
             # test_score = test[0]-test[1]
             # test_score = test
             # if best_random < test_score and tester(1) == 1:
             #     best_random = test_score
             #     player.save_param(path_best_random)
             
-            # random_results.append(test_score)
+            
 
         if (epoch+1) % 500 == 0:
-            torch.save({'epoch': epoch, 'results': results, 'avglosses':avgLosses}, results_path)
+            torch.save({'epoch': epoch, 'results': results, 'avglosses':avgLosses, 'random_results':random_results}, results_path)
             torch.save(buffer, buffer_path)
             player.save_param(path_Save)
             torch.save(random_results, random_results_path)
