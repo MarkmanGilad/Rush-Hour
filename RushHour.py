@@ -262,6 +262,7 @@ class RushHour:
             if (state.board[5,3] == 1 and action == (1,3)):
                 continue
             self.move2(state, action)
+        state.step = 0
            
 
     def cars (self, car_num = 3):

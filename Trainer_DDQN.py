@@ -14,7 +14,7 @@ batch_size = 64
 env = RushHour()
 MIN_Buffer = 4000
 
-File_Num = 20
+File_Num = 22
 path_load= None
 path_Save=f'Data/params_{File_Num}.pth'
 path_best = f'Data/best_params_{File_Num}.pth'
@@ -57,7 +57,7 @@ def main ():
     for epoch in range(start_epoch, epochs):
         # print(f'epoch = {epoch}', end='\r')
         # state_1 = env.get_init_state()
-        state_1 = env.random_init_state(shuffle_time=100,cars_num=min(epoch//10000 + 3, 12))
+        state_1 = env.random_init_state(shuffle_time=100,cars_num=min(epoch//50000 + 3, 12))
         while True: #not env.is_end_of_game(state_1) :
             print (state_1.step, end='\r')
             
@@ -130,7 +130,7 @@ def main ():
         
 
         print (f'epoch={epoch} loss={loss:.5f} step={state_1.step} avgloss={avgLoss:.5f}', end=" ")
-        print (f'learning rate={scheduler.get_last_lr()[0]} path={path_Save} step= {state_1.step} best_step = {best_step}')
+        print (f'learning rate={scheduler.get_last_lr()[0]} path={path_Save} best_step = {best_step}')
 
     torch.save({'epoch': epoch, 'results': results, 'avglosses':avgLosses}, results_path)
     torch.save(buffer, buffer_path)
